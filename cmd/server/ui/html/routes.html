@@ -1,0 +1,106 @@
+{{define "content"}}
+
+<div class="wrapper">
+			<div class="header">
+				<div class="headerContent">
+					<div class="logo">
+						
+						<a href="https://github.com/PolinaSvet" target="_blank">News<span class="pink">Aggregator</span><span></span></a>
+					</div>
+					<ul class="nav">
+						<li data-rubric="Russia" data-count="10"><a href="#">Russia</a></li>
+						<li data-rubric="World" data-count="10"><a href="#">World</a></li>
+						<li data-rubric="Sport" data-count="10"><a href="#">Sport</a></li>
+						<li data-rubric="Technology" data-count="10"><a href="#">Technology</a></li>
+						<li data-rubric="Nature" data-count="10"><a href="#">Nature</a></li>
+						<li data-rubric="Politics" data-count="10"><a href="#">Politics</a></li>
+						<li data-rubric="Design" data-count="10"><a href="#">Design</a></li>
+						<li data-rubric="Development" data-count="10"><a href="#">Development</a></li>
+						<li data-rubric="Programming" data-count="10"><a href="#">Programming</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="content">
+				<div class="leftCol">
+					<ul class="leftNav">
+						<li data-rubric="Russia" data-count="10"><a href="#">Russia</a></li>
+						<li data-rubric="World" data-count="10"><a href="#">World</a></li>
+						<li data-rubric="Sport" data-count="10"><a href="#">Sport</a></li>
+						<li data-rubric="Technology" data-count="10"><a href="#">Technology</a></li>
+						<li data-rubric="Nature" data-count="10"><a href="#">Nature</a></li>
+						<li data-rubric="Politics" data-count="10"><a href="#">Politics</a></li>
+						<li data-rubric="Design" data-count="10"><a href="#">Design</a></li>
+						<li data-rubric="Development" data-count="10"><a href="#">Development</a></li>
+						<li data-rubric="Programming" data-count="10"><a href="#">Programming</a></li>
+					</ul>
+					<div class="block">
+						<h3>The algorithm of the application:</h3>
+						<ul>
+							<li><dd>The news aggregator periodically queries news sites, receives a list of news in XML format (RSS) in response and saves new publications in the database.</dd></li>
+							<li><dd>The user goes to the address of the aggregator web application and sees a fixed number of recent publications with a brief description and a link to the source.</dd></li>	
+						</ul>
+						<p><i></i></p>
+						<p><a href="https://github.com/PolinaSvet/taskNews" class="more" target="_blank">Read more »</a></p>
+					</div>
+				</div>
+				<div class="main">
+				
+					<div class="news-container">
+						<h1 id="newsCaption">News</h1>
+						<div class="news-items">
+							<!-- Здесь будут новости -->
+
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="footer">
+				<p>&copy; Footer content <a href="#">Hi there!</a></p>
+			</div>
+		</div>
+ 
+<script>
+    $(document).ready(function() {
+
+            $('.nav li, .leftNav li').click(function() {
+                let rubric = $(this).data('rubric');
+                let count = $(this).data('count');
+                document.getElementById("newsCaption").innerHTML = rubric;
+                fetch(`/news/${rubric}/${count}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        $('.news-items').html('');
+                        data.forEach(news => {
+                            let PublicTimeSec = new Date(news.PublicTime*1000);
+                            let PublicTimeSecStr = PublicTimeSec.toString();
+                            let html = `
+								<div class="news-item">
+									<div class="news-image">
+										<a href=${news.Link} target="_blank">
+											<img src="${news.ImageLink}"></img>
+										</a>
+										<p>${PublicTimeSecStr}</p>
+										<p><a href=${news.Link} target="_blank">${news.LinkTitle} »</a></p>
+									</div>
+									<div class="news-content">
+										<h1>${news.Title}</h1>
+										<p>${news.Content}</p>
+									</div>
+								</div>
+                            `;
+                            $('.news-items').append(html);
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Error fetching news:", error);
+                    });
+            });
+
+
+			$('.leftNav li[data-rubric="Sport"][data-count="10"]').trigger('click');
+        });
+</script>
+
+
+{{end}}
